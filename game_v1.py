@@ -102,8 +102,9 @@ def territory(player):
 def solve(depth,  turn):
     ter_1 = territory(1)   #territory of oposition
     ter_2 = territory(0)   #minimize 
-    if depth == 3: return 0
-    if (ter_1 == 0) or (ter_2 == 0): return ter_1
+    if depth == 2: return ter_1
+    if ter_1 == 0: return 0
+    if ter_2 == 0: return ter_1
     min_score = 10000
     min_arrow = 0
     min_piece_move = 0
@@ -176,11 +177,14 @@ board[6][4] = -1
 board[7][9] = -1
 board[10][10] = -1
 
+#board[8][2] = -1
 choice = [0,0,0]
 player_pos = [[ 701 , 704 , 710 , 1008 ] , [ 104 , 107 , 404 , 409 ] ] 
 
 #main
 display_board()
+#print territory(1)
+#print territory(0)
 print solve(1,0)
 print choice
 display_board()
