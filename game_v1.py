@@ -1,3 +1,18 @@
+#input
+def fill_board():
+    x = 0
+    y = 0
+    for i in range(1,11):
+        line = raw_input().split(' ')
+        for j in range(10):
+            board[i][j+1] = int(line[j])
+            if board[i][j+1] == 1:
+                player_pos[0][x] = (100*i) + (j+1)
+                x = x + 1;
+            if board[i][j+1] == 2:
+                player_pos[1][y] = (100*i) + (j+1)
+                y = y + 1;  
+
 #display board
 def display_board():
     for i in range(1,11):
@@ -100,11 +115,11 @@ def territory(player):
 
 #recursion
 def solve(depth,  turn):
-    ter_1 = territory(1)   #territory of oposition
-    ter_2 = territory(0)   #minimize 
-    if depth == 2: return ter_1
-    if ter_1 == 0: return 0
-    if ter_2 == 0: return ter_1
+    ter = [0 , 0]
+    ter[0] = territory(0)   
+    ter[1] = territory(1)
+    if depth == 2: return ter[turn]
+    if (ter[0] == 0) or (ter[1] == 0): return ter[p%2]
     min_score = 10000
     min_arrow = 0
     min_piece_move = 0
@@ -125,8 +140,6 @@ def solve(depth,  turn):
             arrow_moves = generate(next_x, next_y)
             for arrow_move in arrow_moves:
                 board[arrow_move/100][arrow_move%100] = -1
-                print piece,move,arrow_move
-                display_board()
                 total_territory = solve(depth + 1, (turn + 1)%2)
                 if total_territory <= min_score:
                     min_score = total_territory
@@ -143,17 +156,15 @@ def solve(depth,  turn):
             board[next_x][next_y] = 0
             board[cur_x][cur_y] = turn + 1
             player_pos[turn][piece] = (100*cur_x) + cur_y
-    if turn == 0:
+    if turn == p-1:
         choice[0] = min_which_piece
         choice[1] = min_piece_move
         choice[2] = min_arrow
-        print choice
         return min_score
     else:
         choice[0] = max_which_piece
         choice[1] = max_piece_move
         choice[2] = max_arrow
-        print choice
         return max_score
         
 
@@ -164,27 +175,12 @@ for i in range(12): board[0][i] = 9
 for i in range(12): board[11][i] = 9
 for i in range(12): board[i][0] = 9
 for i in range(12): board[i][11] = 9
-board[1][4] = 2
-board[1][7] = 2
-board[4][4] = 2
-board[4][9] = 2
-board[7][1] = 1
-board[7][4] = 1
-board[7][10] = 1
-board[10][8] = 1
-board[2][4] = -1
-board[6][4] = -1
-board[7][9] = -1
-board[10][10] = -1
-
-#board[8][2] = -1
 choice = [0,0,0]
-player_pos = [[ 701 , 704 , 710 , 1008 ] , [ 104 , 107 , 404 , 409 ] ] 
-
+player_pos = [[ 0 , 0 , 0 , 0 ] , [ 0 , 0 , 0 , 0 ] ] 
+fill_board()
+p = int(raw_input())
 #main
-display_board()
-#print territory(1)
-#print territory(0)
-print solve(1,0)
-print choice
-display_board()
+s = solve(1,p - 1)
+print (player_pos[p-1][choice[0]]/100) - 1, (player_pos[p-1][choice[0]]%100) - 1
+print (choice[1]/100) - 1, (choice[1]%100) - 1
+print (choice[2]/100) - 1, (choice[2]%100) - 1
