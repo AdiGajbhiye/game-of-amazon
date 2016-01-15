@@ -119,7 +119,16 @@ def solve(depth,  turn):
     ter[0] = territory(0)   
     ter[1] = territory(1)
     if depth == 2: return ter[turn]
-    if (ter[0] == 0) or (ter[1] == 0): return ter[p%2]
+    if ter[p%2] == 0:
+        for i in range(4):
+            x = player_pos[p-1][i]/100
+            y = player_pos[p-1][i]%100
+            m = generate(x,y)[0]
+            a = generate(m/100,m%100)[0]
+            choice[0] = (100*x) + y
+            choice[1] = m
+            choice[2] = a
+
     min_score = 10000
     min_arrow = 0
     min_piece_move = 0
